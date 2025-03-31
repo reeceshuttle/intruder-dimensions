@@ -212,18 +212,16 @@ def set_trainable_params(model, args):
     for name, param in model.named_parameters():
         if classifier_name in name:
             param.requires_grad = True
-        if layernorm_name in name and args.method != "head_only":
-            param.requires_grad = True
-        
+
     if args.method == "head_only":
         return
     elif args.method == "full":
         for name, param in model.named_parameters():
-            if not any([embedding_name in name for embedding_name in embedding_names]): # everything but embedding
+            if not any([embedding_name in name for embedding_name in embedding_names]) and layernorm_name not in name and 'weight' in name:
                 param.requires_grad = True
-    elif args.method in ['lora']:
+    elif args.method == 'lora':
         for name, param in model.named_parameters():
-            if "lora" in name:
+            if "weight" in name and "lora" in name: 
                 param.requires_grad = True
     else:
         raise Exception(f'finetuning method {args.method} is not supported yet.')
