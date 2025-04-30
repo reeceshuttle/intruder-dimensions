@@ -26,6 +26,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_path", type=str, required=True)
     parser.add_argument("--base_model", type=str, required=False, default="roberta-base")
     parser.add_argument("--intruder_dimension_threshold", type=float, required=False, default=0.5)
+    parser.add_argument("--top_k_singular_vectors", type=int, required=False, default=10)
     parser.add_argument("--verbose", action='store_true')
     args = parser.parse_args()
     print(args)
@@ -45,5 +46,6 @@ if __name__ == "__main__":
 
     num_intruder_dimensions = find_number_of_intruder_dimensions(base_model, finetuned_model, model_args, 
                                                                  threshold=args.intruder_dimension_threshold, 
+                                                                 k=args.top_k_singular_vectors,
                                                                  verbose=args.verbose)
     print(f'number of intruder dimensions found in {args.model_path.split("/")[-1]}: {num_intruder_dimensions}')
